@@ -5,26 +5,23 @@
   ())
 
 
-(defclass fundamental-leaf-node (fundamental-node)
-  ())
-
-
-(defclass fundamental-tree-node (fundamental-node)
+(defclass abstract-tree-node (fundamental-node)
   ((%children :initarg :children
               :reader children
               :type list))
-  (:initarg :children '()))
+  (:default-initargs :children '()))
 
 
-(defclass fundamental-operator-node (fundamental-tree-node)
+(defclass fundamental-operator-node (fundamental-node)
   ())
 
 
-(defclass chain-node (fundamental-operator-node)
+(defclass chain-node (abstract-tree-node)
   ())
 
 
-(defclass fundamental-boolean-node (fundamental-operator-node)
+(defclass fundamental-boolean-node (fundamental-operator-node
+                                    abstract-tree-node)
   ())
 
 
@@ -36,7 +33,7 @@
   ())
 
 
-(defclass fundamental-value-node (fundamental-leaf-node)
+(defclass fundamental-value-node (fundamental-node)
   ())
 
 
@@ -54,36 +51,41 @@
   ())
 
 
-(defclass object-node (fundamental-tree-node)
+(defclass object-node (abstract-tree-node)
   ((%object-class :initarg :object-class
                   :reader object-class))
   (:default-initargs :object-class (make-instance 'anonymus-variable-node)))
 
 
-(defclass set-node (fundamental-tree-node)
+(defclass set-node (abstract-tree-node)
   ())
 
 
 (defclass fundamental-binary-operator (fundamental-operator-node)
-  ())
+  ((%left :initarg :left
+          :reader left)
+   (%right :initarg :right
+           :reader right)))
 
 
-(defclass slot-node (fundamental-leaf-node)
-  ((%slot-name :initarg :slot-name
-               :reader slot-name)
+(defclass slot-node (fundamental-node)
+  ((%slot-reader :initarg :slot-reader
+                 :reader slot-reader)
    (%value :initarg :value
-           :reader value)))
+           :reader value))
+  (:default-initargs :value (make-instance 'anonymus-value-node)))
 
 
 (defclass in-set-operator (fundamental-binary-operator)
   ())
 
 
-(defclass equality-operator (fundamental-operator-node)
+(defclass equality-operator (fundamental-operator-node abstract-tree-node)
   ())
 
 
-(defclass fundamental-algebra-operator (fundamental-operator-node)
+(defclass fundamental-algebra-operator (fundamental-operator-node
+                                        abstract-tree-node)
   ())
 
 
@@ -95,9 +97,11 @@
   ())
 
 
-(defclass greater-operator (fundamental-operator)
+(defclass greater-operator (fundamental-operator
+                            abstract-tree-node)
   ())
 
 
-(defclass less-operator (fundamental-operator)
+(defclass less-operator (fundamental-operator
+                         abstract-tree-node)
   ())

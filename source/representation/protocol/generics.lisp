@@ -5,4 +5,6 @@
 (defgeneric object-class (object-node))
 (defgeneric variable-name (free-value-node))
 (defgeneric value (constant-node))
-(defgeneric slot-name (slot-node))
+(defgeneric slot-reader (slot-node))
+(defgeneric left (binary-operator))
+(defgeneric right (binary-operator))
