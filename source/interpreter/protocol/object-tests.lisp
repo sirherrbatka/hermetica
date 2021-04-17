@@ -94,18 +94,18 @@
   (prove:is (second list) 1))
 
 
-(bind ((pattern1 (make-instance 'repr:object-node
-                                :object-class (make 'repr:constant-node :value (find-class 'tested-class1))
-                                :children (list (make-instance 'repr:slot-node
-                                                               :slot-reader 'test-slot2
-                                                               :value (make 'repr:free-value-node
-                                                                            :variable-name '?value)))))
-       (pattern2 (make-instance 'repr:object-node
-                                :object-class (make 'repr:constant-node :value (find-class 'tested-class2))
-                                :children (list (make-instance 'repr:slot-node
-                                                               :slot-reader 'test-slot2
-                                                               :value (make 'repr:constant-node
-                                                                            :value -1)))))
+(bind ((pattern1 (make 'repr:object-node
+                       :object-class (make 'repr:constant-node :value (find-class 'tested-class1))
+                       :children (list (make-instance 'repr:slot-node
+                                                      :slot-reader 'test-slot2
+                                                      :value (make 'repr:free-value-node
+                                                                   :variable-name '?value)))))
+       (pattern2 (make 'repr:object-node
+                       :object-class (make 'repr:constant-node :value (find-class 'tested-class2))
+                       :children (list (make-instance 'repr:slot-node
+                                                      :slot-reader 'test-slot2
+                                                      :value (make 'repr:constant-node
+                                                                   :value -1)))))
        (compiled1 (compile-node pattern1))
        (compiled2 (compile-node pattern2))
        (context (context *testing-sequence-interface*

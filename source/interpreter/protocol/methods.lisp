@@ -5,12 +5,26 @@
   (compile nil (generate-code node)))
 
 
+(defmethod generate-code ((node repr:chain-node))
+  (with-gensyms (!context !next)
+    (bind ((content (repr:children node))
+           ((:labels impl (nodes))
+            (if (endp nodes)
+                `(lambda (c n)
+                   (funcall ,!next c n))
+                `(lambda (,!context ,!next)
+                   (funcall ,(generate-code (first nodes))
+                            ,!context
+                            ,(~> nodes rest impl))))))
+      (impl content))))
+
+
 ;; This code only deals with the class and slot variable binding
 (defmethod generate-code ((node repr:object-node))
-  (alexandria:with-gensyms (!context
-                            !next !object !block
-                            !index !start !end
-                            !check)
+  (with-gensyms (!context
+                 !next !object !block
+                 !index !start !end
+                 !check)
     (let ((slots (repr:children node))
           (class (repr:object-class node)))
       `(lambda (,!context &optional (,!next #'constantly-t))
