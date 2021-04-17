@@ -17,7 +17,9 @@
                 #:minus-operator
                 #:greater-operator
                 #:less-operator
+                #:negation-node
                 #:children
+                #:inner
                 #:object-class
                 #:variable-name
                 #:value
@@ -28,6 +30,8 @@
            #:chain-node
            #:and-node
            #:or-node
+           #:negation-node
+           #:inner
            #:constant-node
            #:free-value-node
            #:anonymus-value-node

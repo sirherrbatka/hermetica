@@ -33,6 +33,11 @@
   ())
 
 
+(defclass negation-node (fundamental-node)
+  ((%inner :initarg :inner
+           :reader inner)))
+
+
 (defclass fundamental-value-node (fundamental-node)
   ())
 

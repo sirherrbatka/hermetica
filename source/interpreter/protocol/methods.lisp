@@ -5,6 +5,25 @@
   (compile nil (generate-code node)))
 
 
+(defmethod generate-code ((node repr:negation-node))
+  (with-gensyms (!context !next !start !success !places !block)
+    (bind ((content (repr:inner node)))
+      `(lambda (,!context &optional (,!next #'constantly-t))
+         (block ,!block
+           (bind ((,!start (start ,!context))
+                  ((:values ,!success ,!places)
+                   (funcall ,!next ,!context)))
+             (unless ,!success
+               (return-from ,!block (values nil nil)))
+             (setf (context-start ,!context) ,!start)
+             (unless (endp ,!places)
+               (setf (context-end ,!context) (car (last ,!places))))
+             (if (funcall ,(generate-code content)
+                          ,!context)
+                 (return-from ,!block (values nil nil))
+                 (return-from ,!block (values t ,!places)))))))))
+
+
 (defmethod generate-code ((node repr:chain-node))
   (with-gensyms (!context !next)
     (bind ((content (repr:children node))

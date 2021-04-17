@@ -9,5 +9,4 @@
   sequence-interface
   sequence
   (start 0 :type fixnum)
-  (end 0 :type fixnum)
-  (index 0 :type fixnum))
+  (end 0 :type fixnum))

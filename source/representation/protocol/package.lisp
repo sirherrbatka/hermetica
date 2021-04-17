@@ -12,6 +12,8 @@
    #:constant-node
    #:free-value-node
    #:anonymus-value-node
+   #:inner
+   #:negation-node
    #:object-node
    #:set-node
    #:fundamental-binary-operator
