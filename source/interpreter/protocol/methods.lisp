@@ -76,8 +76,8 @@
                                         object-symbol
                                         exit-symbol)
   `(handler-case (if (boundp ',(repr:variable-name slot-value))
-                     (locally (declare special ,(repr:variable-name slot-value))
-                       (unless (equal ,(repr:value slot-value) (,slot-reader ,object-symbol))
+                     (locally (declare (special ,(repr:variable-name slot-value)))
+                       (unless (equal ,(repr:variable-name slot-value) (,slot-reader ,object-symbol))
                          (return-from ,exit-symbol (values nil '()))))
                      nil)
      (unbound-slot (e) (declare (ignore e))
@@ -116,7 +116,7 @@
                                          object-symbol
                                          exit-symbol)
   `(if (boundp ',(repr:variable-name value))
-       (locally (declare special ,(repr:variable-name value))
+       (locally (declare (special ,(repr:variable-name value)))
          (unless (eq ,(repr:variable-name value) (class-of ,object-symbol))
            (return-from ,exit-symbol (values nil '()))))
        nil))
