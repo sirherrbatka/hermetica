@@ -10,9 +10,9 @@
     (bind ((content (repr:children node))
            ((:labels impl (nodes))
             (if (endp nodes)
-                `(lambda (c n)
+                `(lambda (c &optional (n #'constantly-t))
                    (funcall ,!next c n))
-                `(lambda (,!context ,!next)
+                `(lambda (,!context &optional (,!next #'constantly-t))
                    (funcall ,(generate-code (first nodes))
                             ,!context
                             ,(~> nodes rest impl))))))

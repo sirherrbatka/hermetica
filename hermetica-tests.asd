@@ -13,5 +13,6 @@
                 :components ((:module "protocol")))
                (:module "interpreter"
                 :components ((:module "protocol"
-                              :components ((:test-file "object-tests")
+                              :components ((:file "common-tests")
+                                           (:test-file "object-tests")
                                            (:test-file "chain-tests")))))))
