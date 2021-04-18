@@ -16,4 +16,5 @@
                               :components ((:file "common-tests")
                                            (:test-file "object-tests")
                                            (:test-file "negation-tests")
+                                           (:test-file "recursive-tests")
                                            (:test-file "chain-tests")))))))

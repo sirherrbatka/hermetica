@@ -7,3 +7,4 @@
 (defgeneric generate-slot-value-binding-code (slot-value slot-reader object-symbol exit-symbol))
 (defgeneric generate-class-checking-code (class object-symbol exit-symbol))
 (defgeneric generate-class-binding-code (class object-symbol exit-symbol))
+(defgeneric generate-value-binding-code (bind-node))

@@ -13,6 +13,8 @@
                 #:slot-node
                 #:in-set-operator
                 #:equality-operator
+                #:recursive-node
+                #:bind-node
                 #:plus-operator
                 #:minus-operator
                 #:greater-operator
@@ -41,12 +43,14 @@
            #:slot-node
            #:in-set-operator
            #:expression-node
+           #:recursive-node
            #:equality-operator
            #:plus-operator
            #:minus-operator
            #:greater-operator
            #:less-operator
            #:children
+           #:bind-node
            #:object-class
            #:variable-name
            #:value

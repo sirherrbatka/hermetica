@@ -4,6 +4,44 @@
 (defmethod compile-node ((node hermetica.representation.protocol:fundamental-node))
   (compile nil (generate-code node)))
 
+
+(defmethod generate-code ((node repr:recursive-node))
+  (let* ((inner (repr:inner node))
+         (bind-nodes (repr:children node))
+         (inner-code (generate-code inner)))
+    (with-gensyms (!context !inner !found !next !other-next !positions !something-next)
+      `(lambda (,!context &optional (,!next #'constantly-t ,!something-next))
+         (labels ((,!other-next (,!context)
+                    (if ,!something-next
+                        (bind (((:values ,!found ,!positions)
+                                (funcall ,!next (context-quasi-clone ,!context))))
+                          (if ,!found
+                              (values t ,!positions)
+                              (nest
+                               ,@(mapcar #'generate-value-binding-code bind-nodes)
+                               (,!inner ,!context #',!other-next))))
+                        (nest
+                         ,@(mapcar #'generate-value-binding-code bind-nodes)
+                         (bind (((:values ,!found ,!positions)
+                                 (,!inner ,!context #',!other-next)))
+                           (if ,!found
+                               (values ,!found ,!positions)
+                               (values t '()))))))
+                  (,!inner (,!context &optional (,!other-next #'constantly-t))
+                    (funcall ,inner-code ,!context #',!other-next)))
+           (bind (((:values ,!found ,!positions) (,!inner ,!context #',!other-next)))
+             (values (not (endp ,!positions))
+                     ,!positions)))))))
+
+
+(defmethod generate-value-binding-code ((node repr:bind-node))
+  (let ((variable-name (repr:variable-name node))
+        (value (repr:value node)))
+    `(let ((,variable-name (locally (declare (special ,variable-name))
+                             ,value)))
+       (declare (special ,variable-name)))))
+
+
 (defmethod generate-code ((node repr:negation-node))
   (with-gensyms (!context !next !start !success !places !block)
     (bind ((content (repr:inner node)))

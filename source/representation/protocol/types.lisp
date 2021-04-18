@@ -115,3 +115,16 @@
 (defclass expression-node (fundamental-node)
   ((%inner :initarg :inner
            :reader inner)))
+
+
+(defclass recursive-node (abstract-tree-node)
+  ((%inner :initarg :inner
+           :reader inner))
+  (:default-initargs :children nil))
+
+
+(defclass bind-node (fundamental-node)
+  ((%variable-name :initarg :variable-name
+                   :reader variable-name)
+   (%value :initarg :value
+           :reader value)))

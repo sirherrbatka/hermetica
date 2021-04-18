@@ -15,7 +15,9 @@
    #:inner
    #:negation-node
    #:expression-node
+   #:recursive-node
    #:object-node
+   #:bind-node
    #:set-node
    #:fundamental-binary-operator
    #:slot-node
