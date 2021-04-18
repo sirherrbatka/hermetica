@@ -6,9 +6,11 @@
 
 
 (defmethod generate-code ((node repr:recursive-node))
-  (let* ((inner (repr:inner node))
+  (bind ((inner (repr:inner node))
          (bind-nodes (repr:children node))
-         (inner-code (generate-code inner)))
+         (inner-code (generate-code inner))
+         ((:flet generate-value-binding-code (bind-node))
+          (generate-value-binding-code (repr:value bind-node) bind-node)))
     (with-gensyms (!context !inner !found !next !other-next !positions !something-next)
       `(lambda (,!context &optional (,!next #'constantly-t ,!something-next))
          (labels ((,!other-next (,!context)
@@ -34,9 +36,9 @@
                      ,!positions)))))))
 
 
-(defmethod generate-value-binding-code ((node repr:bind-node))
+(defmethod generate-value-binding-code ((value repr:expression-node) (node repr:bind-node))
   (let ((variable-name (repr:variable-name node))
-        (value (repr:value node)))
+        (value (repr:inner value)))
     `(let ((,variable-name (locally (declare (special ,variable-name))
                              ,value)))
        (declare (special ,variable-name)))))

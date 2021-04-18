@@ -31,7 +31,7 @@
                  'repr:recursive-node
                  :children (list (make 'repr:bind-node
                                        :variable-name '?i
-                                       :value '(1+ ?i)))
+                                       :value (make 'repr:expression-node :inner '(1+ ?i))))
                  :inner (make-instance 'repr:object-node
                                        :object-class (make 'repr:anonymus-value-node)
                                        :children (list (make-instance 'repr:slot-node
