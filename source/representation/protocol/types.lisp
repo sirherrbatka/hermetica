@@ -110,3 +110,8 @@
 (defclass less-operator (fundamental-operator
                          abstract-tree-node)
   ())
+
+
+(defclass expression-node (fundamental-node)
+  ((%inner :initarg :inner
+           :reader inner)))

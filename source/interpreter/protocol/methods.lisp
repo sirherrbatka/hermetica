@@ -4,7 +4,6 @@
 (defmethod compile-node ((node hermetica.representation.protocol:fundamental-node))
   (compile nil (generate-code node)))
 
-
 (defmethod generate-code ((node repr:negation-node))
   (with-gensyms (!context !next !start !success !places !block)
     (bind ((content (repr:inner node)))
@@ -115,6 +114,23 @@
                      nil)
      (unbound-slot (e) (declare (ignore e))
        (return-from ,exit-symbol (values nil '())))))
+
+
+(defmethod generate-slot-checking-code ((slot-value repr:expression-node)
+                                        slot-reader
+                                        object-symbol
+                                        exit-symbol)
+  `(handler-case (unless (equal ,(repr:inner slot-value) (,slot-reader ,object-symbol))
+                   (return-from ,exit-symbol (values nil '())))
+     (unbound-slot (e) (declare (ignore e))
+       (return-from ,exit-symbol (values nil '())))))
+
+
+(defmethod generate-slot-value-binding-code ((slot-value repr:expression-node)
+                                             slot-reader
+                                             object-symbol
+                                             exit-symbol)
+  nil)
 
 
 (defmethod generate-slot-value-binding-code ((slot-value repr:free-value-node)

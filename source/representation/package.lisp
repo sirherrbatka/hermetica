@@ -20,6 +20,7 @@
                 #:negation-node
                 #:children
                 #:inner
+                #:expression-node
                 #:object-class
                 #:variable-name
                 #:value
@@ -39,6 +40,7 @@
            #:set-node
            #:slot-node
            #:in-set-operator
+           #:expression-node
            #:equality-operator
            #:plus-operator
            #:minus-operator

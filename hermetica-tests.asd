@@ -15,4 +15,5 @@
                 :components ((:module "protocol"
                               :components ((:file "common-tests")
                                            (:test-file "object-tests")
+                                           (:test-file "negation-tests")
                                            (:test-file "chain-tests")))))))

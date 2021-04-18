@@ -14,6 +14,7 @@
    #:anonymus-value-node
    #:inner
    #:negation-node
+   #:expression-node
    #:object-node
    #:set-node
    #:fundamental-binary-operator
