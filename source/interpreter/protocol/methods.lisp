@@ -5,6 +5,10 @@
   (compile nil (generate-code node)))
 
 
+(defmethod generate-code ((node repr:and-node))
+  (generate-code/and-chain node))
+
+
 (defmethod generate-code ((node repr:recursive-node))
   (bind ((inner (repr:inner node))
          (bind-nodes (repr:children node))
@@ -64,17 +68,7 @@
 
 
 (defmethod generate-code ((node repr:chain-node))
-  (with-gensyms (!context !next)
-    (bind ((content (repr:children node))
-           ((:labels impl (nodes))
-            (if (endp nodes)
-                `(lambda (c &optional (n #'constantly-t))
-                   (funcall ,!next c n))
-                `(lambda (,!context &optional (,!next #'constantly-t))
-                   (funcall ,(generate-code (first nodes))
-                            ,!context
-                            ,(~> nodes rest impl))))))
-      (impl content))))
+  (generate-code/and-chain node))
 
 
 ;; This code only deals with the class and slot variable binding

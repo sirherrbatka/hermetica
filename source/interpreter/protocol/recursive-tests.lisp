@@ -55,4 +55,14 @@
   (prove:is (length list) 3)
   (prove:is list '(0 1 2)))
 
+(defclass weapon-fire ()
+  ((%tick :initarg :tick
+          :reader tick)
+   (%target :initarg :target
+            :reader target)
+   (%shooter :initart :shooter
+             :reader shooter)
+   (%weapon :initarg :weapon
+            :reader weapon)))
+
 (prove:finalize)
