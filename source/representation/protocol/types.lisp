@@ -128,3 +128,8 @@
                    :reader variable-name)
    (%value :initarg :value
            :reader value)))
+
+
+(defclass predicate-node (fundamental-node)
+  ((%value :initarg :value
+           :reader value)))

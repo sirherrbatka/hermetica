@@ -9,6 +9,18 @@
   (generate-code/and-chain node))
 
 
+(defmethod generate-code ((node repr:predicate-node))
+  (generate-predicate-code (repr:value node) node))
+
+
+(defmethod generate-predicate-code ((inner repr:expression-node) (node repr:predicate-node))
+  (with-gensyms (!context !next)
+    `(lambda (,!context (,!next #'constantly-t))
+       (if ,(repr:inner inner)
+           (funcall ,!next ,!context)
+           (values nil '())))))
+
+
 (defmethod generate-code ((node repr:recursive-node))
   (bind ((inner (repr:inner node))
          (bind-nodes (repr:children node))

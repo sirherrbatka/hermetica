@@ -22,6 +22,7 @@
                 #:negation-node
                 #:children
                 #:inner
+                #:predicate-node
                 #:expression-node
                 #:object-class
                 #:variable-name
@@ -51,6 +52,7 @@
            #:less-operator
            #:children
            #:bind-node
+           #:predicate-node
            #:object-class
            #:variable-name
            #:value

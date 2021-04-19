@@ -10,4 +10,4 @@
 (defgeneric generate-class-checking-code (class object-symbol exit-symbol))
 (defgeneric generate-class-binding-code (class object-symbol exit-symbol))
 (defgeneric generate-value-binding-code (value bind-node))
-(defgeneric generate-predicate-code ())
+(defgeneric generate-predicate-code (inner predicate))

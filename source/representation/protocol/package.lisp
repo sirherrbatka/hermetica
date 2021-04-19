@@ -18,6 +18,7 @@
    #:recursive-node
    #:object-node
    #:bind-node
+   #:predicate-node
    #:set-node
    #:fundamental-binary-operator
    #:slot-node
