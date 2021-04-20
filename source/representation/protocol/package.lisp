@@ -19,6 +19,7 @@
    #:object-node
    #:bind-node
    #:predicate-node
+   #:variable-name
    #:set-node
    #:fundamental-binary-operator
    #:slot-node

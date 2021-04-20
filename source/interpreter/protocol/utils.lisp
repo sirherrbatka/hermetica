@@ -16,17 +16,20 @@
 
 
 (defun generate-code/and-chain (node)
-  (with-gensyms (!context !next)
+  (with-gensyms (!context !next !n)
     (bind ((content (repr:children node))
            ((:labels impl (nodes))
             (if (endp nodes)
-                `(lambda (c &optional (n #'constantly-t))
-                   (funcall ,!next c n))
-                `(lambda (,!context &optional (,!next #'constantly-t))
-                   (funcall ,(generate-code (first nodes))
-                            ,!context
-                            ,(~> nodes rest impl))))))
-      (impl content))))
+                !next
+                `(lambda (,!context)
+                   (let ((,!n ,(generate-code (first nodes))))
+                     (if (null ,!n)
+                         (values t '())
+                         (funcall ,!n
+                                  ,!context
+                                  ,(~> nodes rest impl))))))))
+      `(lambda (,!context &optional ,!next)
+         (funcall ,(impl content) ,!context)))))
 
 
 (defun ignore-warning (condition)

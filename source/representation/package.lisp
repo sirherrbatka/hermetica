@@ -23,6 +23,7 @@
                 #:children
                 #:inner
                 #:predicate-node
+                #:unbind-node
                 #:expression-node
                 #:object-class
                 #:variable-name
@@ -34,6 +35,7 @@
            #:chain-node
            #:and-node
            #:or-node
+           #:unbind-node
            #:negation-node
            #:inner
            #:constant-node

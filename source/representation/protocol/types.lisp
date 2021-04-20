@@ -133,3 +133,8 @@
 (defclass predicate-node (fundamental-node)
   ((%value :initarg :value
            :reader value)))
+
+
+(defclass unbind-node (fundamental-node)
+  ((%variable-name :initarg :variable-name
+                   :reader variable-name)))

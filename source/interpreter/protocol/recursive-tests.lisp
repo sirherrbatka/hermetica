@@ -1,6 +1,6 @@
 (cl:in-package #:hermetica.interpreter.protocol)
 
-(prove:plan 6)
+(prove:plan 8)
 
 (bind ((pattern (make-instance
                  'repr:recursive-node
@@ -60,9 +60,90 @@
           :reader tick)
    (%target :initarg :target
             :reader target)
-   (%shooter :initart :shooter
+   (%shooter :initarg :shooter
              :reader shooter)
    (%weapon :initarg :weapon
             :reader weapon)))
+
+
+(defmethod print-object ((object weapon-fire) stream)
+  (print-unreadable-object (object stream)
+    (format stream "~a, ~a, ~a" (tick object) (shooter object) (weapon object))))
+
+
+(defclass garbage ()
+  ((%tick :initarg :tick
+          :reader tick)))
+
+(bind ((pattern
+        (make 'repr:chain-node
+              :children (list
+                         (make-instance
+                          'repr:object-node
+                          :object-class (make 'repr:constant-node
+                                              :value (find-class 'weapon-fire))
+                          :children (list (make-instance
+                                           'repr:slot-node
+                                           :slot-reader 'tick
+                                           :value (make 'repr:free-value-node
+                                                        :variable-name '?anchor-tick))
+                                          (make-instance
+                                           'repr:slot-node
+                                           :slot-reader 'weapon
+                                           :value (make 'repr:free-value-node
+                                                        :variable-name '?weapon))
+                                          (make-instance
+                                           'repr:slot-node
+                                           :slot-reader 'shooter
+                                           :value (make 'repr:free-value-node
+                                                        :variable-name '?shooter))))
+                         (make-instance
+                          'repr:recursive-node
+                          :children (list)
+                          :inner (make 'repr:chain-node
+                                       :children (list (make-instance
+                                                        'repr:object-node
+                                                        :object-class (make 'repr:constant-node
+                                                                            :value (find-class 'weapon-fire))
+                                                        :children (list (make-instance
+                                                                         'repr:slot-node
+                                                                         :slot-reader 'tick
+                                                                         :value (make 'repr:free-value-node
+                                                                                      :variable-name '?tick))
+                                                                        (make-instance
+                                                                         'repr:slot-node
+                                                                         :slot-reader 'weapon
+                                                                         :value (make 'repr:free-value-node
+                                                                                      :variable-name '?weapon))
+                                                                        (make-instance
+                                                                         'repr:slot-node
+                                                                         :slot-reader 'shooter
+                                                                         :value (make 'repr:free-value-node
+                                                                                      :variable-name '?shooter))))
+                                                       (make-instance
+                                                        'repr:predicate-node
+                                                        :value (make 'repr:expression-node :inner '(< (- ?tick ?anchor-tick) 32)))
+                                                       (make-instance
+                                                        'repr:bind-node
+                                                        :variable-name '?anchor-tick
+                                                        :value (make 'repr:expression-node :inner '?tick))
+                                                       (make-instance
+                                                        'repr:unbind-node
+                                                        :variable-name '?tick)))))))
+       (compiled (compile-node pattern))
+       (context (context *testing-sequence-interface*
+                         (vector (make 'garbage :tick 0) ; 0
+                                 (make 'weapon-fire :tick 15 :shooter "steve" :weapon "AWP") ; 1
+                                 (make 'garbage :tick 18) ; 2
+                                 (make 'weapon-fire :tick 20 :shooter "JOSH" :weapon "UMP") ; 3
+                                 (make 'garbage :tick 20) ; 4
+                                 (make 'weapon-fire :tick 25 :shooter "JOSH" :weapon "UMP") ; 5
+                                 (make 'garbage :tick 30) ; 6
+                                 (make 'weapon-fire :tick 50 :shooter "JOSH" :weapon "UMP") ; 7
+                                 (make 'weapon-fire :tick 100 :shooter "JOSH" :weapon "UMP") ; 8
+                                 )))
+       ((:values found list) (funcall compiled context)))
+  (prove:ok found)
+  (prove:is list '(3 5 7)))
 
 (prove:finalize)
