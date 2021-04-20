@@ -27,3 +27,8 @@
                             ,!context
                             ,(~> nodes rest impl))))))
       (impl content))))
+
+
+(defun ignore-warning (condition)
+  (declare (ignore condition))
+  (muffle-warning))

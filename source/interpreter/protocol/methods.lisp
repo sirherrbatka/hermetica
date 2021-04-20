@@ -2,7 +2,8 @@
 
 
 (defmethod compile-node ((node hermetica.representation.protocol:fundamental-node))
-  (compile nil (generate-code node)))
+  (handler-bind ((warning #'ignore-warning))
+    (compile nil (generate-code node))))
 
 
 (defmethod generate-code ((node repr:and-node))
@@ -13,9 +14,10 @@
   (generate-predicate-code (repr:value node) node))
 
 
-(defmethod generate-predicate-code ((inner repr:expression-node) (node repr:predicate-node))
+(defmethod generate-predicate-code ((inner repr:expression-node)
+                                    (node repr:predicate-node))
   (with-gensyms (!context !next)
-    `(lambda (,!context (,!next #'constantly-t))
+    `(lambda (,!context &optional (,!next #'constantly-t))
        (if ,(repr:inner inner)
            (funcall ,!next ,!context)
            (values nil '())))))
