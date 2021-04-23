@@ -6,6 +6,20 @@
     (compile nil (generate-code node))))
 
 
+(defmethod generate-code ((node repr:optional-node))
+  (with-gensyms (!context !next !found !positions)
+    `(lambda (,!context &optional ,!next)
+       (when (null ,!next)
+         (setf ,!next #'constantly-t))
+       (bind (((:values ,!found ,!positions)
+               (funcall ,(~> node repr:inner generate-code)
+                        (context-quasi-clone ,!context))))
+         (bind (((:values f p) (funcall ,!next ,!context)))
+           (if ,!found
+               (values f (append ,!positions p))
+               (values ,!found ,!positions)))))))
+
+
 (defmethod generate-code ((node repr:and-node))
   (generate-code/and-chain node))
 

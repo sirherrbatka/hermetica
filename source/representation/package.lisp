@@ -22,6 +22,7 @@
                 #:negation-node
                 #:children
                 #:inner
+                #:optional-node
                 #:predicate-node
                 #:unbind-node
                 #:expression-node
@@ -43,6 +44,7 @@
            #:anonymus-value-node
            #:object-node
            #:set-node
+           #:optional-node
            #:slot-node
            #:in-set-operator
            #:expression-node

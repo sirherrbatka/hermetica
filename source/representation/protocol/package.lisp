@@ -20,6 +20,8 @@
    #:bind-node
    #:predicate-node
    #:variable-name
+   #:inner
+   #:optional-node
    #:set-node
    #:fundamental-binary-operator
    #:slot-node
