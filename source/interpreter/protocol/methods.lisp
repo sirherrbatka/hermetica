@@ -2,7 +2,7 @@
 
 
 (defmethod compile-node ((node hermetica.representation.protocol:fundamental-node))
-  (let ((*error-output* (make-broadcast-stream)))
+  (handler-bind ((condition #'muffle-warning))
     (compile nil (generate-code node))))
 
 
