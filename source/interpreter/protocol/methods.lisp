@@ -2,7 +2,7 @@
 
 
 (defmethod compile-node ((node hermetica.representation.protocol:fundamental-node))
-  (handler-bind ((warning #'ignore-warning))
+  (let ((*error-output* (make-broadcast-stream)))
     (compile nil (generate-code node))))
 
 
@@ -15,9 +15,8 @@
                (funcall ,(~> node repr:inner generate-code)
                         (context-quasi-clone ,!context))))
          (bind (((:values f p) (funcall ,!next ,!context)))
-           (if ,!found
-               (values f (append ,!positions p))
-               (values ,!found ,!positions)))))))
+           (values f (if ,!found
+                         (append ,!positions p) p)))))))
 
 
 (defmethod generate-code ((node repr:and-node))
