@@ -12,6 +12,7 @@
    #:constant-node
    #:free-value-node
    #:anonymus-value-node
+   #:default
    #:inner
    #:negation-node
    #:expression-node

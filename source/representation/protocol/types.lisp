@@ -49,7 +49,9 @@
 
 (defclass free-value-node (fundamental-value-node)
   ((%variable-name :initarg :variable-name
-                   :reader variable-name)))
+                   :reader variable-name)
+   (%default :initarg :default
+             :reader read-default)))
 
 
 (defclass anonymus-value-node (fundamental-value-node)

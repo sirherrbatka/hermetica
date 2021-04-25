@@ -9,3 +9,4 @@
 (defgeneric left (binary-operator))
 (defgeneric right (binary-operator))
 (defgeneric inner (negation-node))
+(defgeneric default (free-value-node))

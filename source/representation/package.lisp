@@ -30,6 +30,7 @@
                 #:variable-name
                 #:value
                 #:slot-reader
+                #:default
                 #:left
                 #:right)
   (:export #:abstract-tree-node
@@ -55,6 +56,7 @@
            #:greater-operator
            #:less-operator
            #:children
+           #:default
            #:bind-node
            #:predicate-node
            #:object-class

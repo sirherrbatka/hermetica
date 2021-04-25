@@ -69,7 +69,6 @@
                     (if ,!next
                         (bind (((:values ,!found ,!positions)
                                 (funcall ,!next (context-quasi-clone ,!context))))
-                          (break)
                           (if ,!found
                               (values t ,!positions)
                               (nest
@@ -88,6 +87,20 @@
            (bind (((:values ,!found ,!positions) (,!inner ,!context)))
              (values ,!found
                      ,!positions)))))))
+
+
+(defmethod generate-value-binding-code ((value hermetica.representation.protocol:fundamental-value-node)
+                                        (node repr:bind-node))
+  (let ((variable-name (repr:variable-name node))
+        (value (repr:variable-name value)))
+    `(let ((,variable-name (locally (declare (special ,variable-name))
+                             (if (boundp ,value)
+                                 ,value
+                                 ,(bind (((:values default has-default) (repr:default value)))
+                                    (if has-default
+                                        default
+                                        (error 'unbound-variable :name value)))))))
+       (declare (special ,variable-name)))))
 
 
 (defmethod generate-value-binding-code ((value repr:expression-node) (node repr:bind-node))

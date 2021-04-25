@@ -35,3 +35,12 @@
 (defun ignore-warning (condition)
   (declare (ignore condition))
   (muffle-warning))
+
+
+(defmacro with-default (node reader object)
+  `(handler-case (,reader ,object)
+     (unbound-slot (e)
+       (bind (((:values default-value present) (repr:default ,node)))
+         (if present
+             default-value
+             (error e))))))
