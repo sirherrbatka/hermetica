@@ -9,14 +9,17 @@
 (defmethod generate-code ((node repr:optional-node))
   (with-gensyms (!context !next !found !positions)
     `(lambda (,!context &optional ,!next)
-       (when (null ,!next)
-         (setf ,!next #'constantly-t))
-       (bind (((:values ,!found ,!positions)
-               (funcall ,(~> node repr:inner generate-code)
-                        (context-quasi-clone ,!context))))
-         (bind (((:values f p) (funcall ,!next ,!context)))
-           (values f (if ,!found
-                         (append ,!positions p) p)))))))
+       (if ,!next
+           (bind (((:values ,!found ,!positions)
+                   (funcall ,(~> node repr:inner generate-code)
+                            (context-quasi-clone ,!context)
+                            ,!next)))
+             (if ,!found
+                 (values t ,!positions)
+                 (funcall ,!next ,!context)))
+           (values t
+                   (nth-value 1 (funcall ,(~> node repr:inner generate-code)
+                                         ,!context)))))))
 
 
 (defmethod generate-code ((node repr:and-node))
@@ -92,14 +95,13 @@
 (defmethod generate-value-binding-code ((value hermetica.representation.protocol:fundamental-value-node)
                                         (node repr:bind-node))
   (let ((variable-name (repr:variable-name node))
-        (value (repr:variable-name value)))
-    `(let ((,variable-name (locally (declare (special ,variable-name))
-                             (if (boundp ,value)
-                                 ,value
-                                 ,(bind (((:values default has-default) (repr:default value)))
-                                    (if has-default
-                                        default
-                                        (error 'unbound-variable :name value)))))))
+        (content (repr:variable-name value)))
+    `(let ((,variable-name (if (boundp ',content)
+                               ,content
+                               ,(bind (((:values default has-default) (repr:default value)))
+                                  (if has-default
+                                      default
+                                      `(error 'unbound-variable :name ,content))))))
        (declare (special ,variable-name)))))
 
 
@@ -209,13 +211,23 @@
                                         slot-reader
                                         object-symbol
                                         exit-symbol)
-  `(handler-case (if (boundp ',(repr:variable-name slot-value))
-                     (locally (declare (special ,(repr:variable-name slot-value)))
-                       (unless (equal ,(repr:variable-name slot-value) (,slot-reader ,object-symbol))
-                         (return-from ,exit-symbol (values nil '()))))
-                     nil)
-     (unbound-slot (e) (declare (ignore e))
-       (return-from ,exit-symbol (values nil '())))))
+  (bind (((:values default has-default) (repr:default slot-value)))
+    (if has-default
+        `(handler-case (if (boundp ',(repr:variable-name slot-value))
+                           (locally (declare (special ,(repr:variable-name slot-value)))
+                             (unless (equal ,(repr:variable-name slot-value) (,slot-reader ,object-symbol))
+                               (return-from ,exit-symbol (values nil '()))))
+                           (unless (equal ,(repr:variable-name slot-value) ,default)
+                             (return-from ,exit-symbol (values nil '()))))
+           (unbound-slot (e) (declare (ignore e))
+             (return-from ,exit-symbol (values nil '()))))
+        `(handler-case (if (boundp ',(repr:variable-name slot-value))
+                           (locally (declare (special ,(repr:variable-name slot-value)))
+                             (unless (equal ,(repr:variable-name slot-value) (,slot-reader ,object-symbol))
+                               (return-from ,exit-symbol (values nil '()))))
+                           nil)
+           (unbound-slot (e) (declare (ignore e))
+             (return-from ,exit-symbol (values nil '())))))))
 
 
 (defmethod generate-slot-checking-code ((slot-value repr:expression-node)
