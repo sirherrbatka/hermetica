@@ -1,14 +1,21 @@
 (cl:in-package #:hermetica.parser.protocol)
 
 
+(defparameter *special-characters* '(#\, #\| #\! #\? #\: #\} #\{))
+
+
+(defun special-character-p (character)
+  (member character *special-characters*))
+
+
 (defun ?special-character ()
-  (maxpc:?satisfies (rcurry #'member '(#\, #\|))))
+  (maxpc:?satisfies #'special-character-p))
 
 
 (defun ?word-character ()
   (maxpc:?satisfies (alexandria:conjoin
-                     (compose #'not #'serapeum:whitespacep)
-                     (compose #'not (rcurry #'member '(#\, #\|))))))
+                     (complement #'serapeum:whitespacep)
+                     (complement #'special-character-p))))
 
 
 (defun =word ()
@@ -37,9 +44,49 @@
                     :variable-name (make-variable-name variable-name)))))
 
 
+(defun =anonymus-value ()
+  (maxpc:=destructure (_) (maxpc:=list (maxpc:?eq #\?))
+    (make-instance 'repr:anonymus-value-node)))
+
+
 (defun =value ()
   (maxpc:%or '=free-value/parser
              (=constant-value)))
+
+
+(defun =padding ()
+  (maxpc:%any (maxpc:?eq #\space)))
+
+
+(defun =slot ()
+  (maxpc:=destructure (reader _ _ value _)
+                      (maxpc:=list (=word)
+                                   (maxpc:?eq #\:)
+                                   (maxpc:%maybe (=padding))
+                                   (maxpc:%or (=value)
+                                              (=anonymus-value))
+                                   (maxpc:%maybe (=padding)))
+    (make-instance 'repr:slot-node
+                   :slot-reader (make-variable-name reader)
+                   :value value)))
+
+
+(defun =slots ()
+  (maxpc:%any (=slot)))
+
+
+(defun =object ()
+  (maxpc:=destructure (class _ slots _)
+                      (maxpc:=list
+                       (maxpc:%or (=value)
+                                  (=anonymus-value))
+                       (maxpc:?eq #\{)
+                       (maxpc:%maybe (=slots))
+                       (maxpc:?eq #\})
+                       )
+    (make-instance 'repr:object-node
+                   :object-class class
+                   :children slots)))
 
 
 (setf (fdefinition '=free-value/parser) (=free-value))
