@@ -59,8 +59,9 @@
 
 
 (defun =slot ()
-  (maxpc:=destructure (reader _ _ value _)
-                      (maxpc:=list (=word)
+  (maxpc:=destructure (_ reader _ _ value _)
+                      (maxpc:=list (maxpc:%maybe (=padding))
+                                   (=word)
                                    (maxpc:?eq #\:)
                                    (maxpc:%maybe (=padding))
                                    (maxpc:%or (=value)
@@ -82,8 +83,7 @@
                                   (=anonymus-value))
                        (maxpc:?eq #\{)
                        (maxpc:%maybe (=slots))
-                       (maxpc:?eq #\})
-                       )
+                       (maxpc:?eq #\}))
     (make-instance 'repr:object-node
                    :object-class class
                    :children slots)))
