@@ -8,3 +8,9 @@
   (~> symbol-name
       string-upcase
       (intern (find-package :hermetica.parser.protocol.generated-symbols))))
+
+
+(defun parse-word (word)
+  (or (ignore-errors (parse-integer word))
+      (ignore-errors (parse-float word))
+      (make-variable-name word)))

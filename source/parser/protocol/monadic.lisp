@@ -24,7 +24,7 @@
 
 (defun =constant-value ()
   (maxpc:=destructure (value) (maxpc:=list (=word))
-    (make-instance 'repr:constant-node :value value)))
+    (make-instance 'repr:constant-node :value (parse-word value))))
 
 
 (defun =free-value ()
@@ -55,7 +55,7 @@
 
 
 (defun =padding ()
-  (maxpc:%any (maxpc:?eq #\space)))
+  (maxpc:%any (maxpc:?satisfies #'serapeum:whitespacep)))
 
 
 (defun =slot ()
