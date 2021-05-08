@@ -6,7 +6,8 @@
   :depends-on ( #:iterate
                 #:serapeum
                 #:alexandria
-                #:cl-data-structures)
+                #:cl-data-structures
+                #:maxpc)
   :serial T
   :pathname "source"
   :components ((:file "aux-package")
@@ -27,6 +28,16 @@
                                            (:file "generics")
                                            (:file "types")
                                            (:file "utils")
+                                           (:file "functions")
+                                           (:file "methods")))
+                             (:file "package")))
+               (:module "parser"
+                :components ((:module "protocol"
+                              :components ((:file "package")
+                                           (:file "generics")
+                                           (:file "types")
+                                           (:file "utils")
+                                           (:file "monadic")
                                            (:file "functions")
                                            (:file "methods")))
                              (:file "package")))

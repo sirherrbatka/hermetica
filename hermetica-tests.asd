@@ -1,5 +1,5 @@
-(asdf:defsystem #:hermetica/tests
-  :name "hermetica/tests"
+(asdf:defsystem #:hermetica-tests
+  :name "hermetica-tests"
   :version "0.0.0"
   :license "BSD simplified"
   :author "Marek Kochanowicz"
